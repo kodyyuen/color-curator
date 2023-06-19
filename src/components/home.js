@@ -6,12 +6,10 @@ import {
   Button,
   Image,
   Row,
-  Col,
   ButtonGroup,
 } from "react-bootstrap";
 import { findImageByRGB, findNameByRGB } from "./colors/colors-service";
 import AnswerPrompt from "./answer-prompt";
-import InputField from "./input-field";
 
 const Home = () => {
   const [red, setRed] = useState(Math.floor(Math.random() * 256));
