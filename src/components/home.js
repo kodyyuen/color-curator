@@ -7,6 +7,7 @@ import {
   Image,
   Row,
   ButtonGroup,
+  Col,
 } from "react-bootstrap";
 import { findImageByRGB, findNameByRGB } from "./colors/colors-service";
 import AnswerPrompt from "./answer-prompt";
@@ -18,6 +19,7 @@ const Home = () => {
   const [name, setName] = useState("");
   const [image, setImage] = useState("");
   const [playerName, setPlayerName] = useState("");
+  const [playerImage, setPlayerImage] = useState("");
 
   const [redAns, setRedAns] = useState(0);
   const [greenAns, setGreenAns] = useState(0);
@@ -36,7 +38,8 @@ const Home = () => {
 
   const playerColor = {
     color: `rgb(${finalRed}, ${finalGreen}, ${finalBlue})`,
-    textShadow: "-1px 1px 0 #000, 1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000"
+    textShadow:
+      "-1px 1px 0 #000, 1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000",
   };
 
   useEffect(() => {
@@ -47,6 +50,9 @@ const Home = () => {
   useEffect(() => {
     findNameByRGB(finalRed, finalGreen, finalBlue).then((response) =>
       setPlayerName(response)
+    );
+    findImageByRGB(finalRed, finalGreen, finalBlue).then((response) =>
+      setPlayerImage(response)
     );
   }, [finalRed, finalGreen, finalBlue]);
 
@@ -83,37 +89,82 @@ const Home = () => {
       <Row className="my-3">
         <h1>Color Curator/Chooser?</h1>
       </Row>
-      <InputGroup className="mb-3">
-        <InputGroup.Text>Red</InputGroup.Text>
-        <Form.Control
-          aria-label="Red value"
-          value={redAns}
-          onChange={(event) =>
-            setRedAns(Math.min(parseInt(event.target.value) || 0, 255))
-          }
-        />
-      </InputGroup>
-      <InputGroup className="mb-3">
-        <InputGroup.Text>Green</InputGroup.Text>
-        <Form.Control
-          aria-label="Green value"
-          value={greenAns}
-          onChange={(event) =>
-            setGreenAns(Math.min(parseInt(event.target.value) || 0, 255))
-          }
-        />
-      </InputGroup>
-      <InputGroup className="mb-3">
-        <InputGroup.Text>Blue</InputGroup.Text>
-        <Form.Control
-          aria-label="Blue value"
-          value={blueAns}
-          onChange={(event) =>
-            setBlueAns(Math.min(parseInt(event.target.value) || 0, 255))
-          }
-        />
-      </InputGroup>{" "}
-      <Image src={image} className="m-3"></Image>
+      <Row>
+        <Col>
+          <InputGroup className="mb-3">
+            <InputGroup.Text
+              className={`fw-bold ${
+                finalRed === red
+                  ? "text-success"
+                  : finalRed > red
+                  ? "text-primary"
+                  : "text-danger"
+              }`}
+            >
+              R
+            </InputGroup.Text>
+            <Form.Control
+              aria-label="Red value"
+              value={redAns}
+              onChange={(event) =>
+                setRedAns(Math.min(parseInt(event.target.value) || 0, 255))
+              }
+            />
+          </InputGroup>
+        </Col>
+        <Col>
+          <InputGroup className="mb-3">
+            <InputGroup.Text
+              className={`fw-bold ${
+                finalGreen === green
+                  ? "text-success"
+                  : finalGreen > green
+                  ? "text-primary"
+                  : "text-danger"
+              }`}
+            >
+              G
+            </InputGroup.Text>
+            <Form.Control
+              aria-label="Green value"
+              value={greenAns}
+              onChange={(event) =>
+                setGreenAns(Math.min(parseInt(event.target.value) || 0, 255))
+              }
+            />
+          </InputGroup>
+        </Col>
+        <Col>
+          <InputGroup className="mb-3">
+            <InputGroup.Text
+              className={`fw-bold ${
+                finalBlue === blue
+                  ? "text-success"
+                  : finalBlue > blue
+                  ? "text-primary"
+                  : "text-danger"
+              }`}
+            >
+              B
+            </InputGroup.Text>
+            <Form.Control
+              aria-label="Blue value"
+              value={blueAns}
+              onChange={(event) =>
+                setBlueAns(Math.min(parseInt(event.target.value) || 0, 255))
+              }
+            />
+          </InputGroup>
+        </Col>
+      </Row>
+      <Row className="">
+        <Col>
+          <Image src={playerImage} className="m-3"></Image>
+        </Col>
+        <Col>
+          <Image src={image} className="m-3"></Image>
+        </Col>
+      </Row>
       <Container className="mt-3">
         <ButtonGroup>
           <Button className="m-1" onClick={() => checkAnswers()}>
@@ -142,8 +193,7 @@ const Home = () => {
         )}
         {submitted && !correct && giveUp && (
           <h1 style={answerColor}>
-            Answer: rgb({red}, {green}, {blue})
-            <br></br>
+            Answer: rgb({red}, {green}, {blue})<br></br>
             Color: {name}
           </h1>
         )}
