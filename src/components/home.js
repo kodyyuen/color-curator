@@ -89,7 +89,15 @@ const Home = () => {
       <Row className="my-3">
         <h1>Color Curator/Chooser?</h1>
       </Row>
-      <Row>
+      <Row className="my-3">
+        <Col>
+          <Image src={playerImage} className="m-3"></Image>
+        </Col>
+        <Col>
+          <Image src={image} className="m-3"></Image>
+        </Col>
+      </Row>
+      <Row className="mb-2">
         <Col>
           <InputGroup className="mb-3">
             <InputGroup.Text
@@ -157,15 +165,7 @@ const Home = () => {
           </InputGroup>
         </Col>
       </Row>
-      <Row className="">
-        <Col>
-          <Image src={playerImage} className="m-3"></Image>
-        </Col>
-        <Col>
-          <Image src={image} className="m-3"></Image>
-        </Col>
-      </Row>
-      <Container className="mt-3">
+      <Container className="mt-0">
         <ButtonGroup>
           <Button className="m-1" onClick={() => checkAnswers()}>
             Submit
