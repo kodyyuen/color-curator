@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import {
   Container,
-  InputGroup,
-  Form,
   Button,
   Image,
   Row,
@@ -11,6 +9,7 @@ import {
 } from "react-bootstrap";
 import { findImageByRGB, findNameByRGB } from "./colors/colors-service";
 import AnswerPrompt from "./answer-prompt";
+import InputField from "./input-field";
 
 const Home = () => {
   const [red, setRed] = useState(Math.floor(Math.random() * 256));
@@ -18,28 +17,36 @@ const Home = () => {
   const [blue, setBlue] = useState(Math.floor(Math.random() * 256));
   const [name, setName] = useState("");
   const [image, setImage] = useState("");
-  const [playerName, setPlayerName] = useState("");
+  const [playerColorName, setPlayerColorName] = useState("");
   const [playerImage, setPlayerImage] = useState("");
 
-  const [redAns, setRedAns] = useState(0);
-  const [greenAns, setGreenAns] = useState(0);
-  const [blueAns, setBlueAns] = useState(0);
-  const [finalRed, setFinalRed] = useState(0);
-  const [finalGreen, setFinalGreen] = useState(0);
-  const [finalBlue, setFinalBlue] = useState(0);
+  const [redInput, setRedInput] = useState(0);
+  const [greenInput, setGreenInput] = useState(0);
+  const [blueInput, setBlueInput] = useState(0);
+  const [redSubmit, setRedSubmit] = useState(0);
+  const [greenSubmit, setGreenSubmit] = useState(0);
+  const [blueSubmit, setBlueSubmit] = useState(0);
 
   const [correct, setCorrect] = useState(false);
   const [giveUp, setGiveUp] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const answerColor = {
+  const answerColorText = {
     color: `rgb(${red}, ${green}, ${blue})`,
+    textShadow: `${
+      redSubmit === 255 && greenSubmit === 255 && blueSubmit === 255
+        ? "-1px 1px 0 #000, 1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000"
+        : "0"
+    }`,
   };
 
-  const playerColor = {
-    color: `rgb(${finalRed}, ${finalGreen}, ${finalBlue})`,
-    textShadow:
-      "-1px 1px 0 #000, 1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000",
+  const playerColorText = {
+    color: `rgb(${redSubmit}, ${greenSubmit}, ${blueSubmit})`,
+    textShadow: `${
+      redSubmit === 255 && greenSubmit === 255 && blueSubmit === 255
+        ? "-1px 1px 0 #000, 1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000"
+        : "0"
+    }`,
   };
 
   useEffect(() => {
@@ -48,32 +55,32 @@ const Home = () => {
   }, [red, green, blue]);
 
   useEffect(() => {
-    findNameByRGB(finalRed, finalGreen, finalBlue).then((response) =>
-      setPlayerName(response)
+    findNameByRGB(redSubmit, greenSubmit, blueSubmit).then((response) =>
+      setPlayerColorName(response)
     );
-    findImageByRGB(finalRed, finalGreen, finalBlue).then((response) =>
+    findImageByRGB(redSubmit, greenSubmit, blueSubmit).then((response) =>
       setPlayerImage(response)
     );
-  }, [finalRed, finalGreen, finalBlue]);
+  }, [redSubmit, greenSubmit, blueSubmit]);
 
-  const checkAnswers = () => {
-    setCorrect(red === redAns && green === greenAns && blue === blueAns);
+  const checkInputwers = () => {
+    setCorrect(red === redInput && green === greenInput && blue === blueInput);
     setSubmitted(true);
-    setFinalRed(redAns);
-    setFinalGreen(greenAns);
-    setFinalBlue(blueAns);
+    setRedSubmit(redInput);
+    setGreenSubmit(greenInput);
+    setBlueSubmit(blueInput);
   };
 
   const newColor = () => {
     setRed(Math.floor(Math.random() * 256));
     setGreen(Math.floor(Math.random() * 256));
     setBlue(Math.floor(Math.random() * 256));
-    setRedAns(0);
-    setGreenAns(0);
-    setBlueAns(0);
-    setFinalRed(0);
-    setFinalGreen(0);
-    setFinalBlue(0);
+    setRedInput(0);
+    setGreenInput(0);
+    setBlueInput(0);
+    setRedSubmit(0);
+    setGreenSubmit(0);
+    setBlueSubmit(0);
     setCorrect(false);
     setGiveUp(false);
     setSubmitted(false);
@@ -84,6 +91,12 @@ const Home = () => {
     setSubmitted(true);
   };
 
+  const onColorChange = (setColor) => {
+    return (value) => {
+      setColor(Math.min(parseInt(value) || 0, 255));
+    };
+  };
+
   return (
     <Container className="my-5 text-center">
       <Row className="my-3">
@@ -91,83 +104,35 @@ const Home = () => {
       </Row>
       <Row className="my-3">
         <Col>
-          <Image src={playerImage} className="m-3"></Image>
+          <Image src={playerImage} className="m-3 border border-dark" />
         </Col>
         <Col>
-          <Image src={image} className="m-3"></Image>
+          <Image src={image} className="m-3 border border-dark" />
         </Col>
       </Row>
       <Row className="mb-2">
-        <Col>
-          <InputGroup className="mb-3">
-            <InputGroup.Text
-              className={`fw-bold ${
-                finalRed === red
-                  ? "text-success"
-                  : finalRed > red
-                  ? "text-primary"
-                  : "text-danger"
-              }`}
-            >
-              R
-            </InputGroup.Text>
-            <Form.Control
-              aria-label="Red value"
-              value={redAns}
-              onChange={(event) =>
-                setRedAns(Math.min(parseInt(event.target.value) || 0, 255))
-              }
-            />
-          </InputGroup>
-        </Col>
-        <Col>
-          <InputGroup className="mb-3">
-            <InputGroup.Text
-              className={`fw-bold ${
-                finalGreen === green
-                  ? "text-success"
-                  : finalGreen > green
-                  ? "text-primary"
-                  : "text-danger"
-              }`}
-            >
-              G
-            </InputGroup.Text>
-            <Form.Control
-              aria-label="Green value"
-              value={greenAns}
-              onChange={(event) =>
-                setGreenAns(Math.min(parseInt(event.target.value) || 0, 255))
-              }
-            />
-          </InputGroup>
-        </Col>
-        <Col>
-          <InputGroup className="mb-3">
-            <InputGroup.Text
-              className={`fw-bold ${
-                finalBlue === blue
-                  ? "text-success"
-                  : finalBlue > blue
-                  ? "text-primary"
-                  : "text-danger"
-              }`}
-            >
-              B
-            </InputGroup.Text>
-            <Form.Control
-              aria-label="Blue value"
-              value={blueAns}
-              onChange={(event) =>
-                setBlueAns(Math.min(parseInt(event.target.value) || 0, 255))
-              }
-            />
-          </InputGroup>
-        </Col>
+        <InputField
+          colorSubmit={redSubmit}
+          color={red}
+          colorInput={redInput}
+          onColorChange={onColorChange(setRedInput)}
+        />
+        <InputField
+          colorSubmit={blueSubmit}
+          color={blue}
+          colorInput={blueInput}
+          onColorChange={onColorChange(setBlueInput)}
+        />
+        <InputField
+          colorSubmit={greenSubmit}
+          color={green}
+          colorInput={greenInput}
+          onColorChange={onColorChange(setGreenInput)}
+        />
       </Row>
       <Container className="mt-0">
         <ButtonGroup>
-          <Button className="m-1" onClick={() => checkAnswers()}>
+          <Button className="m-1" onClick={() => checkInputwers()}>
             Submit
           </Button>
           <Button className="m-1" onClick={() => newColor()}>
@@ -180,19 +145,21 @@ const Home = () => {
       </Container>
       <Container className="my-3 text-center">
         {submitted && correct && (
-          <h1 style={answerColor}>
+          <h1 style={answerColorText}>
             Correct!
             <br></br>
-            Answer: rgb({red}, {green}, {blue}).
-            <br></br>
+            Answer: rgb({red}, {green}, {blue})<br></br>
             Color: {name}
           </h1>
         )}
         {submitted && !correct && !giveUp && (
-          <AnswerPrompt playerColor={playerColor} playerName={playerName} />
+          <AnswerPrompt
+            playerColorText={playerColorText}
+            playerColorName={playerColorName}
+          />
         )}
         {submitted && !correct && giveUp && (
-          <h1 style={answerColor}>
+          <h1 style={answerColorText}>
             Answer: rgb({red}, {green}, {blue})<br></br>
             Color: {name}
           </h1>

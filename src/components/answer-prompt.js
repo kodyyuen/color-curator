@@ -1,10 +1,10 @@
-const AnswerPrompt = ({playerColor, playerName}) => {
+const AnswerPrompt = ({playerColorText, playerColorName}) => {
   return (
     <>
-      <h1 style={playerColor}>
+      <h1 style={playerColorText}>
         Incorrect
         <br></br>
-        Color: {playerName}
+        Color: {playerColorName}
       </h1>
     </>
   );

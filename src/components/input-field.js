@@ -1,15 +1,30 @@
-import { Form, InputGroup } from "react-bootstrap";
+import { Form, InputGroup, Col } from "react-bootstrap";
 
-const InputField = ({value, onChangeInput}) => {
+const InputField = ({colorSubmit, color, colorInput, onColorChange}) => {
   return (
-    <InputGroup className="mb-3">
-      <InputGroup.Text>Blue</InputGroup.Text>
-      <Form.Control
-        aria-label="Blue value"
-        value={value}
-        onChange={(event) => onChangeInput(event)}
-      />
-    </InputGroup>
+    <Col>
+          <InputGroup className="mb-3">
+            <InputGroup.Text
+              className={`fw-bold ${
+                colorSubmit === color
+                  ? "text-success"
+                  : colorSubmit > color
+                  ? "text-primary"
+                  : "text-danger"
+              }`}
+            >
+              R
+            </InputGroup.Text>
+            <Form.Control
+              disabled={colorSubmit === color}
+              aria-label="Red value"
+              value={colorInput}
+              onChange={(event) =>
+                onColorChange(event.target.value)
+              }
+            />
+          </InputGroup>
+        </Col>
   );
 };
 
