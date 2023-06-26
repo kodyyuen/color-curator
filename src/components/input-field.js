@@ -1,6 +1,6 @@
 import { Form, InputGroup, Col } from "react-bootstrap";
 
-const InputField = ({colorSubmit, color, colorInput, onColorChange}) => {
+const InputField = ({colorSubmit, color, colorInput, onColorChange, name}) => {
   return (
     <Col>
           <InputGroup className="mb-3">
@@ -13,11 +13,11 @@ const InputField = ({colorSubmit, color, colorInput, onColorChange}) => {
                   : "text-danger"
               }`}
             >
-              R
+              {name.charAt(0)}
             </InputGroup.Text>
             <Form.Control
               disabled={colorSubmit === color}
-              aria-label="Red value"
+              aria-label={`${name} value`}
               value={colorInput}
               onChange={(event) =>
                 onColorChange(event.target.value)

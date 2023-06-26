@@ -8,7 +8,6 @@ import {
   Col,
 } from "react-bootstrap";
 import { findImageByRGB, findNameByRGB } from "./colors/colors-service";
-import AnswerPrompt from "./answer-prompt";
 import InputField from "./input-field";
 
 const Home = () => {
@@ -63,7 +62,7 @@ const Home = () => {
     );
   }, [redSubmit, greenSubmit, blueSubmit]);
 
-  const checkInputwers = () => {
+  const checkAnswers = () => {
     setCorrect(red === redInput && green === greenInput && blue === blueInput);
     setSubmitted(true);
     setRedSubmit(redInput);
@@ -116,31 +115,34 @@ const Home = () => {
           color={red}
           colorInput={redInput}
           onColorChange={onColorChange(setRedInput)}
-        />
-        <InputField
-          colorSubmit={blueSubmit}
-          color={blue}
-          colorInput={blueInput}
-          onColorChange={onColorChange(setBlueInput)}
+          name={"Red"}
         />
         <InputField
           colorSubmit={greenSubmit}
           color={green}
           colorInput={greenInput}
           onColorChange={onColorChange(setGreenInput)}
+          name={"Green"}
+        />
+        <InputField
+          colorSubmit={blueSubmit}
+          color={blue}
+          colorInput={blueInput}
+          onColorChange={onColorChange(setBlueInput)}
+          name={"Blue"}
         />
       </Row>
       <Container className="mt-0">
         <ButtonGroup>
-          <Button className="m-1" onClick={() => checkInputwers()}>
+          {(!giveUp && !correct) && <Button className="m-1" onClick={() => checkAnswers()}>
             Submit
-          </Button>
+          </Button>}
           <Button className="m-1" onClick={() => newColor()}>
             New Color
           </Button>
-          <Button className="m-1" onClick={() => giveUpHandler()}>
+          {(!giveUp && !correct) && <Button className="m-1" onClick={() => giveUpHandler()}>
             Give Up
-          </Button>
+          </Button>}
         </ButtonGroup>
       </Container>
       <Container className="my-3 text-center">
@@ -153,10 +155,11 @@ const Home = () => {
           </h1>
         )}
         {submitted && !correct && !giveUp && (
-          <AnswerPrompt
-            playerColorText={playerColorText}
-            playerColorName={playerColorName}
-          />
+          <h1 style={playerColorText}>
+            Incorrect
+            <br></br>
+            Color: {playerColorName}
+          </h1>
         )}
         {submitted && !correct && giveUp && (
           <h1 style={answerColorText}>
